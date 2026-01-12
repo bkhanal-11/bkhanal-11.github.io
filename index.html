@@ -62,7 +62,7 @@
             z-index: 1000;
             transition: all 0.3s ease;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
         }
 
@@ -74,20 +74,20 @@
         }
 
         .nav-logo {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 1.8rem;
             text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-logo:hover {
+            transform: rotate(15deg);
         }
 
         .nav-links {
             display: flex;
             gap: 2rem;
             list-style: none;
+            margin-right: 2rem;
         }
 
         .nav-links a {
@@ -559,13 +559,16 @@
             overflow: hidden;
             transition: all 0.4s ease;
             cursor: pointer;
-            position: relative;
         }
 
         .project-card:hover {
-            transform: translateY(-5px) rotateX(2deg);
+            transform: translateY(-5px);
             border-color: var(--accent-primary);
             box-shadow: var(--glow-primary);
+        }
+
+        .project-card:hover .project-image i {
+            transform: scale(1.15) rotate(5deg);
         }
 
         .project-image {
@@ -580,19 +583,8 @@
             overflow: hidden;
         }
 
-        .project-image::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .project-card:hover .project-image::before {
-            left: 100%;
+        .project-image i {
+            transition: transform 0.3s ease;
         }
 
         .project-content {
@@ -695,6 +687,56 @@
             color: var(--text-muted);
             font-size: 0.8rem;
             font-style: italic;
+        }
+
+        /* Certifications Section - Fun Interactive */
+        .certs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .cert-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .cert-card:hover {
+            transform: translateY(-8px) rotateY(10deg);
+            border-color: var(--accent-primary);
+            box-shadow: var(--glow-primary);
+            perspective: 1000px;
+        }
+
+        .cert-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cert-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            line-height: 1.3;
+        }
+
+        .cert-provider {
+            color: var(--text-muted);
+            font-size: 0.8rem;
         }
 
         /* Connect Section - Fun Links */
@@ -917,7 +959,7 @@
             border: 1px solid var(--glass-border);
             border-radius: 20px;
             padding: 2rem;
-            max-width: 550px;
+            max-width: 600px;
             width: 100%;
             max-height: 80vh;
             overflow-y: auto;
@@ -946,7 +988,7 @@
 
         .modal-title {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             margin-bottom: 1rem;
             color: var(--text-primary);
         }
@@ -954,6 +996,7 @@
         .modal-body {
             color: var(--text-secondary);
             line-height: 1.7;
+            margin-bottom: 1.5rem;
         }
 
         .modal-body h4 {
@@ -979,6 +1022,39 @@
             left: 0;
             color: var(--accent-primary);
         }
+
+        .modal-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .modal-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 0.6rem 1rem;
+            border-radius: 10px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .modal-link:hover {
+            background: var(--accent-gradient);
+            color: white;
+            border-color: var(--accent-primary);
+        }
+
+        .modal-link i {
+            font-size: 1.1rem;
+        }
     </style>
 </head>
 <body>
@@ -987,13 +1063,13 @@
 
     <!-- Navigation -->
     <nav class="navbar">
-        <a href="#" class="nav-logo">BK</a>
         <ul class="nav-links">
             <li><a href="#about">About</a></li>
             <li><a href="#experience">Experience</a></li>
             <li><a href="#education">Education</a></li>
             <li><a href="#skills">Skills</a></li>
             <li><a href="#projects">Projects</a></li>
+            <li><a href="#certifications">Certifications</a></li>
             <li><a href="#publications">Publications</a></li>
             <li><a href="#connect">Connect</a></li>
         </ul>
@@ -1014,6 +1090,7 @@
         <a href="#education" onclick="toggleMenu()">Education</a>
         <a href="#skills" onclick="toggleMenu()">Skills</a>
         <a href="#projects" onclick="toggleMenu()">Projects</a>
+        <a href="#certifications" onclick="toggleMenu()">Certifications</a>
         <a href="#publications" onclick="toggleMenu()">Publications</a>
         <a href="#connect" onclick="toggleMenu()">Connect</a>
     </div>
@@ -1179,7 +1256,7 @@
 
             <div class="timeline-item" onclick="toggleTimeline(this)">
                 <div class="timeline-card">
-                    <span class="timeline-date">07.2018 - 08.2020</span>
+                    <span class="timeline-date">During Studies</span>
                     <h3 class="timeline-role">Teaching Assistant</h3>
                     <div class="timeline-company">Jacobs University Bremen</div>
                     <div class="timeline-location">
@@ -1206,7 +1283,7 @@
 
             <div class="timeline-item" onclick="toggleTimeline(this)">
                 <div class="timeline-card">
-                    <span class="timeline-date">07.2018 - 08.2020</span>
+                    <span class="timeline-date">During Studies</span>
                     <h3 class="timeline-role">Student Supervisor</h3>
                     <div class="timeline-company">IRC Library</div>
                     <div class="timeline-location">
@@ -1224,7 +1301,7 @@
     <section id="education">
         <div class="section-header">
             <h2 class="section-title">Education</h2>
-            <p class="section-subtitle">Academic background and achievements</p>
+            <p class="section-subtitle">Academic background</p>
         </div>
         <div class="timeline-container">
             <div class="timeline-line"></div>
@@ -1254,8 +1331,6 @@
                                 <li>Collective Intelligence and Agent Technology</li>
                                 <li>Semantic Web and Linked Data</li>
                             </ul>
-                            <h4>Achievement</h4>
-                            <p>JYU Scholarship (50% tuition waiver)</p>
                         </div>
                     </div>
                 </div>
@@ -1287,8 +1362,6 @@
                             </ul>
                             <h4>Thesis</h4>
                             <p>Non-Linearity in Wireless Communications and Deep Learning</p>
-                            <h4>Achievement</h4>
-                            <p>Merit-Based Scholarship</p>
                         </div>
                     </div>
                 </div>
@@ -1511,6 +1584,57 @@
         </div>
     </section>
 
+    <!-- Certifications Section - Fun Interactive -->
+    <section id="certifications">
+        <div class="section-header">
+            <h2 class="section-title">Certifications</h2>
+            <p class="section-subtitle">Specializations and courses completed</p>
+        </div>
+        <div class="certs-grid">
+            <a href="https://www.coursera.org/account/accomplishments/specialization/certificate/YRHJSZ57BE2Z" target="_blank" class="cert-card">
+                <div class="cert-icon">🧠</div>
+                <div class="cert-name">Deep Learning Specialization</div>
+                <div class="cert-provider">Coursera</div>
+            </a>
+
+            <a href="https://www.coursera.org/account/accomplishments/specialization/certificate/YGYXG88RUN92" target="_blank" class="cert-card">
+                <div class="cert-icon">📝</div>
+                <div class="cert-name">NLP Specialization</div>
+                <div class="cert-provider">Coursera</div>
+            </a>
+
+            <a href="https://www.coursera.org/account/accomplishments/specialization/certificate/VXPCQAAHPVRX" target="_blank" class="cert-card">
+                <div class="cert-icon">🎨</div>
+                <div class="cert-name">GAN Specialization</div>
+                <div class="cert-provider">Coursera</div>
+            </a>
+
+            <a href="https://www.coursera.org/account/accomplishments/specialization/certificate/MX76FSN5JMVF" target="_blank" class="cert-card">
+                <div class="cert-icon">⚙️</div>
+                <div class="cert-name">ML Specialization</div>
+                <div class="cert-provider">Coursera</div>
+            </a>
+
+            <a href="https://www.coursera.org/account/accomplishments/specialization/certificate/TYBHYGFK5PJH" target="_blank" class="cert-card">
+                <div class="cert-icon">🚀</div>
+                <div class="cert-name">MLOps Specialization</div>
+                <div class="cert-provider">Coursera</div>
+            </a>
+
+            <a href="https://www.coursera.org/account/accomplishments/specialization/certificate/7ACJ3VDPBKH3" target="_blank" class="cert-card">
+                <div class="cert-icon">🔧</div>
+                <div class="cert-name">TensorFlow Developer</div>
+                <div class="cert-provider">DeepLearning.AI</div>
+            </a>
+
+            <a href="https://www.coursera.org/account/accomplishments/specialization/certificate/JNRTRQ76Y5KP" target="_blank" class="cert-card">
+                <div class="cert-icon">🗄️</div>
+                <div class="cert-name">Database Engineer</div>
+                <div class="cert-provider">Meta</div>
+            </a>
+        </div>
+    </section>
+
     <!-- Publications Section -->
     <section id="publications">
         <div class="section-header">
@@ -1577,11 +1701,6 @@
                     <span>Download CV</span>
                 </a>
             </div>
-
-            <a href="/cdn-cgi/l/email-protection#02696a636c636e2c606b716a7563716a323a42656f636b6e2c616d6f" class="email-highlight">
-                <i class="fas fa-envelope"></i>
-                <span><span class="__cf_email__" data-cfemail="6e05060f000f02400c071d06190f1d065e562e09030f0702400d0103">[email&#160;protected]</span></span>
-            </a>
         </div>
     </section>
 
@@ -1602,7 +1721,7 @@
         </div>
     </div>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script>
         // Particle Animation
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
@@ -1740,7 +1859,7 @@
             });
         }, observerOptions);
 
-        document.querySelectorAll('.timeline-item, .skill-category, .project-card, .publication-card').forEach(el => {
+        document.querySelectorAll('.timeline-item, .skill-category, .project-card, .publication-card, .cert-card').forEach(el => {
             observer.observe(el);
         });
 
@@ -1756,7 +1875,7 @@
             document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
         }
 
-        // Modal Functions
+        // Modal Functions with Links
         const modalData = {
             'modal-nepali': {
                 title: 'Nepali OCR using Vision Transformers',
@@ -1769,7 +1888,10 @@
                     </ul>
                     <h4>Technologies:</h4>
                     <p>Python, Transformers, RoBERTa, PyTorch</p>
-                `
+                `,
+                links: [
+                    { url: 'https://github.com/bkhanal-11/nepali-roberta', icon: 'github', text: 'View Code' }
+                ]
             },
             'modal-face': {
                 title: 'Face Generator using Generative Models',
@@ -1783,7 +1905,11 @@
                     </ul>
                     <h4>Dataset:</h4>
                     <p>CelebA facial attribute dataset</p>
-                `
+                `,
+                links: [
+                    { url: 'https://github.com/bkhanal-11/generative-deep-learning', icon: 'github', text: 'Infusing Diffusion Models' },
+                    { url: 'https://github.com/bkhanal-11/applied-gans', icon: 'github', text: 'Applications of GAN' }
+                ]
             },
             'modal-asl': {
                 title: 'Google ASL Fingerspelling Recognition',
@@ -1793,7 +1919,11 @@
                     <p><strong>371th rank out of 1315 teams</strong></p>
                     <h4>Approach:</h4>
                     <p>TFLite model trained on landmark data from MediaPipe Holistic Solution</p>
-                `
+                `,
+                links: [
+                    { url: 'https://github.com/bkhanal-11/gaslfr-kaggle', icon: 'github', text: 'ASL Recognition' },
+                    { url: 'https://github.com/bkhanal-11/gislr-kaggle', icon: 'github', text: 'ISL Recognition' }
+                ]
             },
             'modal-bbdc': {
                 title: 'Bremen Big Data Challenge 2020',
@@ -1803,7 +1933,8 @@
                     <p><strong>12th place out of 31 teams</strong></p>
                     <h4>Approach:</h4>
                     <p>Combination of U-Net and LSTM models. Error achieved: 0.464</p>
-                `
+                `,
+                links: []
             },
             'modal-thesis': {
                 title: 'Non-Linearity in Wireless Communications',
@@ -1814,7 +1945,10 @@
                         <li>Analyzed non-linear effects in wireless channels</li>
                         <li>Applied neural networks for compensation</li>
                     </ul>
-                `
+                `,
+                links: [
+                    { url: 'https://github.com/bkhanal-11/bachelors-thesis', icon: 'github', text: 'View Thesis' }
+                ]
             },
             'modal-llm-compression': {
                 title: 'LLM Compression Techniques Impact',
@@ -1827,7 +1961,10 @@
                     </ul>
                     <h4>Key Findings:</h4>
                     <p>Comprehensive analysis of trade-offs between size, speed, and performance</p>
-                `
+                `,
+                links: [
+                    { url: 'https://arxiv.org/abs/2409.11233', icon: 'file-alt', text: 'Read Paper' }
+                ]
             },
             'modal-paper1': {
                 title: 'Alignment of 360° Images for 3D Mesh Texturing',
@@ -1837,7 +1974,10 @@
                     <p>Novel approach for aligning 360° images with posed color images for locally accurate 3D mesh texturing in virtual tour applications.</p>
                     <h4>Authors:</h4>
                     <p>B. Khanal, M. Om, S. Rijal, V. Ojha</p>
-                `
+                `,
+                links: [
+                    { url: 'https://doi.org/10.3389/fcomp.2024.1388174', icon: 'external-link-alt', text: 'Read Paper' }
+                ]
             },
             'modal-paper2': {
                 title: 'Structure-preserving Planar Simplification',
@@ -1847,7 +1987,10 @@
                     <p>Algorithms for planar simplification of 3D meshes while preserving structural elements for indoor virtual tours captured with LiDAR.</p>
                     <h4>Authors:</h4>
                     <p>B. Khanal, S. Rijal, M. Awale, V. Ojha</p>
-                `
+                `,
+                links: [
+                    { url: 'https://arxiv.org/abs/2408.06814', icon: 'external-link-alt', text: 'Read Paper' }
+                ]
             },
             'modal-paper3': {
                 title: 'Evaluating Compression on LLM Performance',
@@ -1857,7 +2000,10 @@
                     <p>Comprehensive evaluation of LLM compression techniques and their impact on task-specific performance with deployment insights.</p>
                     <h4>Authors:</h4>
                     <p>B. Khanal, J. M. Capone</p>
-                `
+                `,
+                links: [
+                    { url: 'https://arxiv.org/abs/2409.11233', icon: 'external-link-alt', text: 'Read Paper' }
+                ]
             }
         };
 
@@ -1867,9 +2013,19 @@
             const data = modalData[modalId];
 
             if (data) {
+                let linksHtml = '';
+                if (data.links && data.links.length > 0) {
+                    linksHtml = '<div class="modal-links">';
+                    data.links.forEach(link => {
+                        linksHtml += `<a href="${link.url}" target="_blank" class="modal-link"><i class="fab fa-${link.icon}"></i>${link.text}</a>`;
+                    });
+                    linksHtml += '</div>';
+                }
+
                 modalBody.innerHTML = `
                     <h3 class="modal-title">${data.title}</h3>
                     <div class="modal-body">${data.body}</div>
+                    ${linksHtml}
                 `;
                 modalOverlay.classList.add('active');
                 document.body.style.overflow = 'hidden';
