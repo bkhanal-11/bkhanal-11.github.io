@@ -1,3 +1,3 @@
-# [Personal Website](https://bkhanal-11.github.io)
+# [Personal Website](https://bikhanal.github.io)
 
 
