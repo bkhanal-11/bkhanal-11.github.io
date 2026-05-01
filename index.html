@@ -1642,6 +1642,15 @@
             <p class="section-subtitle">Research papers and academic contributions</p>
         </div>
         <div class="publications-list">
+            <div class="publication-card" onclick="openModal('modal-paper4')">
+                <span class="publication-year">2026</span>
+                <div class="publication-title">
+                    TDD Governance for Multi-Agent Code Generation via Prompt Engineering
+                </div>
+                <div class="publication-authors">T. Hasanli, S. Siddeeq, B. Khanal, P. Kotilainen, T. Mikkonen, P. Abrahamsson</div>
+                <div class="publication-venue">PROMPT-SE, EASE 2026</div>
+            </div>
+
             <div class="publication-card" onclick="openModal('modal-paper1')">
                 <span class="publication-year">2024</span>
                 <div class="publication-title">
@@ -2004,6 +2013,19 @@
                 links: [
                     { url: 'https://arxiv.org/abs/2409.11233', icon: 'external-link-alt', text: 'Read Paper' }
                 ]
+            },
+            'modal-paper4': {
+                title: 'TDD Governance for Multi-Agent Code Generation via Prompt Engineering',
+                body: `
+                    <p>Submitted to the 1st International Workshop on Empirical Prompt Engineering for Software Engineering (PROMPT-SE 2026)</p>
+                    <h4>Abstract:</h4>
+                    <p>We present an AI-native TDD framework that operationalizes classical TDD principles as structured prompt-level and workflow-level governance mechanisms. The system enforces phase ordering, bounded repair loops, validation gates, and atomic mutation control to improve stability and reproducibility.</p>
+                    <h4>Authors:</h4>
+                    <p>Tarlan Hasanli, Shahbaz Siddeeq, Bishwash Khanal, Pyry Kotilainen, Tommi Mikkonen, Pekka Abrahamsson</p>
+                `,
+                links: [
+                    { url: 'https://arxiv.org/abs/2604.26615', icon: 'external-link-alt', text: 'Read Paper' }
+                ]
             }
         };
 
@@ -2017,7 +2039,8 @@
                 if (data.links && data.links.length > 0) {
                     linksHtml = '<div class="modal-links">';
                     data.links.forEach(link => {
-                        linksHtml += `<a href="${link.url}" target="_blank" class="modal-link"><i class="fab fa-${link.icon}"></i>${link.text}</a>`;
+                        const iconClass = (link.icon === 'github' || link.icon === 'linkedin' || link.icon === 'orcid') ? 'fab' : 'fas';
+                        linksHtml += `<a href="${link.url}" target="_blank" class="modal-link"><i class="${iconClass} fa-${link.icon}"></i>${link.text}</a>`;
                     });
                     linksHtml += '</div>';
                 }
