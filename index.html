@@ -1,2086 +1,1203 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bishwash Khanal | AI Engineer & Researcher</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg-primary: #0b1120;
-            --bg-secondary: #1e293b;
-            --bg-tertiary: #334155;
-            --accent-primary: #38bdf8;
-            --accent-secondary: #8b5cf6;
-            --accent-gradient: linear-gradient(135deg, #38bdf8 0%, #8b5cf6 100%);
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --glass-bg: rgba(30, 41, 59, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --glow-primary: 0 0 20px rgba(56, 189, 248, 0.3);
-            --glow-secondary: 0 0 20px rgba(139, 92, 246, 0.3);
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
-
-        /* Particle Canvas */
-        #particles-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        /* Navigation */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 1rem 2rem;
-            z-index: 1000;
-            transition: all 0.3s ease;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-        }
-
-        .navbar.scrolled {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
-            padding: 0.8rem 2rem;
-        }
-
-        .nav-logo {
-            font-size: 1.8rem;
-            text-decoration: none;
-            transition: transform 0.3s ease;
-        }
-
-        .nav-logo:hover {
-            transform: rotate(15deg);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-            margin-right: 2rem;
-        }
-
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--accent-gradient);
-            transition: width 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            color: var(--text-primary);
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        .nav-toggle {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-            padding: 10px;
-        }
-
-        .nav-toggle span {
-            width: 25px;
-            height: 2px;
-            background: var(--text-primary);
-            transition: all 0.3s ease;
-        }
-
-        /* Hero Section */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            padding: 2rem;
-        }
-
-        .hero-content {
-            text-align: center;
-            z-index: 10;
-            max-width: 900px;
-        }
-
-        .hero-avatar {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            margin: 0 auto 2rem;
-            background: var(--accent-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            color: white;
-            box-shadow: var(--glow-primary);
-            animation: float 6s ease-in-out infinite;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-avatar::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(from 0deg, transparent, rgba(255,255,255,0.3), transparent 30%);
-            animation: rotate 4s linear infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        @keyframes rotate {
-            100% { transform: rotate(360deg); }
-        }
-
-        .hero-name {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 4rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-typing {
-            font-size: 1.5rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-            min-height: 2rem;
-        }
-
-        .typing-text {
-            display: inline-block;
-            border-right: 2px solid var(--accent-primary);
-            animation: blink 0.7s step-end infinite;
-        }
-
-        @keyframes blink {
-            50% { border-color: transparent; }
-        }
-
-        .hero-location {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            color: var(--text-muted);
-            margin-bottom: 2rem;
-            font-size: 1.1rem;
-        }
-
-        .hero-description {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            max-width: 700px;
-            margin: 0 auto 3rem;
-            line-height: 1.8;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: none;
-            font-size: 1rem;
-        }
-
-        .btn-primary {
-            background: var(--accent-gradient);
-            color: white;
-            box-shadow: var(--glow-primary);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0 30px rgba(56, 189, 248, 0.5);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--text-primary);
-            border: 2px solid var(--glass-border);
-        }
-
-        .btn-secondary:hover {
-            border-color: var(--accent-primary);
-            background: rgba(56, 189, 248, 0.1);
-        }
-
-        .scroll-indicator {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: bounce 2s infinite;
-        }
-
-        .scroll-indicator i {
-            font-size: 2rem;
-            color: var(--text-muted);
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
-            40% { transform: translateX(-50%) translateY(-10px); }
-            60% { transform: translateX(-50%) translateY(-5px); }
-        }
-
-        /* Section Styles */
-        section {
-            padding: 6rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .section-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .section-subtitle {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-        }
-
-        /* Experience Timeline */
-        .timeline-container {
-            position: relative;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .timeline-line {
-            position: absolute;
-            left: 30px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--accent-gradient);
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 2rem;
-            padding-left: 70px;
-            opacity: 0;
-            transform: translateX(-30px);
-            transition: all 0.6s ease;
-        }
-
-        .timeline-item.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: 22px;
-            top: 1.5rem;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: var(--accent-primary);
-            border: 3px solid var(--bg-primary);
-            box-shadow: var(--glow-primary);
-            z-index: 10;
-        }
-
-        .timeline-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 15px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .timeline-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--accent-primary);
-            box-shadow: var(--glow-primary);
-        }
-
-        .timeline-date {
-            display: inline-block;
-            background: var(--accent-gradient);
-            color: white;
-            padding: 0.3rem 1rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 0.8rem;
-        }
-
-        .timeline-role {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.3rem;
-        }
-
-        .timeline-company {
-            color: var(--accent-primary);
-            font-weight: 500;
-            margin-bottom: 0.3rem;
-        }
-
-        .timeline-location {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            margin-bottom: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .timeline-description {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .timeline-details {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease;
-        }
-
-        .timeline-item.expanded .timeline-details {
-            max-height: 400px;
-        }
-
-        .timeline-details-content {
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--glass-border);
-        }
-
-        .timeline-details h4 {
-            color: var(--accent-primary);
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .timeline-details ul {
-            list-style: none;
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-details li {
-            color: var(--text-secondary);
-            padding: 0.2rem 0;
-            padding-left: 1rem;
-            position: relative;
-            font-size: 0.9rem;
-        }
-
-        .timeline-details li::before {
-            content: '▹';
-            position: absolute;
-            left: 0;
-            color: var(--accent-primary);
-        }
-
-        .expand-hint {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            margin-top: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .timeline-item.expanded .expand-hint i {
-            transform: rotate(180deg);
-        }
-
-        /* Skills Section */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .skill-category {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 15px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .skill-category:hover {
-            transform: translateY(-3px);
-            border-color: var(--accent-secondary);
-            box-shadow: var(--glow-secondary);
-        }
-
-        .skill-category-header {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 1rem;
-        }
-
-        .skill-icon {
-            width: 45px;
-            height: 45px;
-            border-radius: 10px;
-            background: var(--accent-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-        }
-
-        .skill-category-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .skill-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-        }
-
-        .skill-tag {
-            background: rgba(56, 189, 248, 0.1);
-            color: var(--accent-primary);
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            font-family: 'Fira Code', monospace;
-            transition: all 0.3s ease;
-            cursor: default;
-        }
-
-        .skill-tag:hover {
-            background: var(--accent-primary);
-            color: var(--bg-primary);
-            transform: scale(1.05);
-        }
-
-        /* Projects Section */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 1.5rem;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .project-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 15px;
-            overflow: hidden;
-            transition: all 0.4s ease;
-            cursor: pointer;
-        }
-
-        .project-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-primary);
-            box-shadow: var(--glow-primary);
-        }
-
-        .project-card:hover .project-image i {
-            transform: scale(1.15) rotate(5deg);
-        }
-
-        .project-image {
-            height: 140px;
-            background: var(--bg-tertiary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            color: var(--text-muted);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .project-image i {
-            transition: transform 0.3s ease;
-        }
-
-        .project-content {
-            padding: 1.2rem;
-        }
-
-        .project-type {
-            color: var(--accent-primary);
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.3rem;
-        }
-
-        .project-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.15rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-
-        .project-description {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.5;
-            margin-bottom: 0.8rem;
-        }
-
-        .project-tech {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.3rem;
-        }
-
-        .project-tech span {
-            background: rgba(139, 92, 246, 0.1);
-            color: var(--accent-secondary);
-            padding: 0.2rem 0.6rem;
-            border-radius: 10px;
-            font-size: 0.75rem;
-            font-family: 'Fira Code', monospace;
-        }
-
-        /* Publications Section */
-        .publications-list {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .publication-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 1.2rem;
-            margin-bottom: 1rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .publication-card:hover {
-            border-color: var(--accent-primary);
-            transform: translateX(5px);
-            box-shadow: var(--glow-primary);
-        }
-
-        .publication-year {
-            display: inline-block;
-            background: var(--accent-secondary);
-            color: white;
-            padding: 0.2rem 0.6rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .publication-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.3rem;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .publication-title:hover {
-            color: var(--accent-primary);
-        }
-
-        .publication-authors {
-            color: var(--accent-primary);
-            font-size: 0.85rem;
-            margin-bottom: 0.2rem;
-        }
-
-        .publication-venue {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            font-style: italic;
-        }
-
-        /* Certifications Section - Fun Interactive */
-        .certs-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .cert-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 15px;
-            padding: 1.5rem 1rem;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .cert-card:hover {
-            transform: translateY(-8px) rotateY(10deg);
-            border-color: var(--accent-primary);
-            box-shadow: var(--glow-primary);
-            perspective: 1000px;
-        }
-
-        .cert-icon {
-            font-size: 2.5rem;
-            margin-bottom: 0.8rem;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .cert-name {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin-bottom: 0.3rem;
-            line-height: 1.3;
-        }
-
-        .cert-provider {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-        }
-
-        /* Connect Section - Fun Links */
-        .connect-section {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .connect-message {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            line-height: 1.7;
-        }
-
-        .fun-links-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .fun-link-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 15px;
-            padding: 1.5rem 1rem;
-            text-decoration: none;
-            color: var(--text-primary);
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.8rem;
-        }
-
-        .fun-link-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-primary);
-            box-shadow: var(--glow-primary);
-        }
-
-        .fun-link-card i {
-            font-size: 2rem;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .fun-link-card span {
-            font-weight: 500;
-        }
-
-        .email-highlight {
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(139, 92, 246, 0.2));
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 1rem 1.5rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.8rem;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .email-highlight:hover {
-            background: var(--glass-bg);
-            border-color: var(--accent-primary);
-            color: var(--text-primary);
-        }
-
-        .email-highlight i {
-            color: var(--accent-primary);
-        }
-
-        /* Footer */
-        footer {
-            background: var(--glass-bg);
-            border-top: 1px solid var(--glass-border);
-            padding: 2rem 2rem;
-            text-align: center;
-        }
-
-        .footer-text {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .footer-text i {
-            margin: 0 0.3rem;
-        }
-
-        /* Mobile Menu */
-        .mobile-menu {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-primary);
-            z-index: 999;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 2rem;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .mobile-menu.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .mobile-menu a {
-            color: var(--text-primary);
-            text-decoration: none;
-            font-size: 1.5rem;
-            font-weight: 600;
-            transition: color 0.3s ease;
-        }
-
-        .mobile-menu a:hover {
-            color: var(--accent-primary);
-        }
-
-        .mobile-close {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-            font-size: 2rem;
-            color: var(--text-primary);
-            cursor: pointer;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-
-            .nav-toggle {
-                display: flex;
-            }
-
-            .mobile-menu {
-                display: flex;
-            }
-
-            .hero-name {
-                font-size: 2.5rem;
-            }
-
-            .hero-typing {
-                font-size: 1.2rem;
-            }
-
-            .hero-avatar {
-                width: 140px;
-                height: 140px;
-                font-size: 3rem;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-
-            .timeline-container {
-                padding-left: 20px;
-            }
-
-            .timeline-line {
-                left: 15px;
-            }
-
-            .timeline-item::before {
-                left: 7px;
-            }
-
-            .timeline-item {
-                padding-left: 45px;
-            }
-
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .fun-links-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* Modal */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--bg-secondary);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 600px;
-            width: 100%;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            font-size: 1.5rem;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .modal-close:hover {
-            color: var(--accent-primary);
-        }
-
-        .modal-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .modal-body {
-            color: var(--text-secondary);
-            line-height: 1.7;
-            margin-bottom: 1.5rem;
-        }
-
-        .modal-body h4 {
-            color: var(--accent-primary);
-            margin: 1rem 0 0.5rem 0;
-            font-size: 0.95rem;
-        }
-
-        .modal-body ul {
-            list-style: none;
-            margin-bottom: 0.5rem;
-        }
-
-        .modal-body li {
-            padding: 0.2rem 0;
-            padding-left: 1rem;
-            position: relative;
-        }
-
-        .modal-body li::before {
-            content: '▹';
-            position: absolute;
-            left: 0;
-            color: var(--accent-primary);
-        }
-
-        .modal-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--glass-border);
-        }
-
-        .modal-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            padding: 0.6rem 1rem;
-            border-radius: 10px;
-            color: var(--text-primary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-
-        .modal-link:hover {
-            background: var(--accent-gradient);
-            color: white;
-            border-color: var(--accent-primary);
-        }
-
-        .modal-link i {
-            font-size: 1.1rem;
-        }
-    </style>
-</head>
-<body>
-    <!-- Particle Canvas -->
-    <canvas id="particles-canvas"></canvas>
-
-    <!-- Navigation -->
-    <nav class="navbar">
-        <ul class="nav-links">
-            <li><a href="#about">About</a></li>
-            <li><a href="#experience">Experience</a></li>
-            <li><a href="#education">Education</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#certifications">Certifications</a></li>
-            <li><a href="#publications">Publications</a></li>
-            <li><a href="#connect">Connect</a></li>
-        </ul>
-        <div class="nav-toggle" onclick="toggleMenu()">
-            <span></span>
-            <span></span>
-            <span></span>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bishwash Khanal</title>
+    <meta
+      name="description"
+      content="Bishwash Khanal is an AI engineer and researcher in Espoo, Finland, working on LLM fine-tuning and compression, RAG and multi-agent systems, real-time computer vision on edge hardware, and AI governance for AI-native software engineering."
+    />
+    <meta name="theme-color" content="#fbfaf5" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+    <script>
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual";
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Poppins:wght@500;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/style/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#top">Skip to content</a>
+    <div class="background" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <nav class="navbar" aria-label="Main navigation">
+        <a class="nav-brand" href="#top" aria-label="Bishwash Khanal - back to top">
+          <span class="nav-mark" aria-hidden="true">BK</span>
+        </a>
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+          aria-label="Open navigation"
+        >
+          <i class="fas fa-bars nav-toggle-open" aria-hidden="true"></i>
+          <i class="fas fa-xmark nav-toggle-close" aria-hidden="true"></i>
+        </button>
+        <div class="nav-panel" id="mobile-menu">
+          <div class="nav-links" aria-label="Primary pages">
+            <a href="#top">Home</a>
+            <a href="#about">About</a>
+            <a href="#focus">Focus</a>
+            <a href="#experience">Experience</a>
+            <a href="#projects">Projects</a>
+            <a href="#publications">Publications</a>
+            <a href="#contact">Contact</a>
+          </div>
+          <a class="nav-cv" href="cv.pdf" download>
+            <i class="fas fa-file-pdf" aria-hidden="true"></i>
+            <span>CV</span>
+          </a>
         </div>
-    </nav>
-
-    <!-- Mobile Menu -->
-    <div class="mobile-menu">
-        <div class="mobile-close" onclick="toggleMenu()">
-            <i class="fas fa-times"></i>
-        </div>
-        <a href="#about" onclick="toggleMenu()">About</a>
-        <a href="#experience" onclick="toggleMenu()">Experience</a>
-        <a href="#education" onclick="toggleMenu()">Education</a>
-        <a href="#skills" onclick="toggleMenu()">Skills</a>
-        <a href="#projects" onclick="toggleMenu()">Projects</a>
-        <a href="#certifications" onclick="toggleMenu()">Certifications</a>
-        <a href="#publications" onclick="toggleMenu()">Publications</a>
-        <a href="#connect" onclick="toggleMenu()">Connect</a>
-    </div>
-
-    <!-- Hero Section -->
-    <header class="hero" id="about">
-        <div class="hero-content">
-            <div class="hero-avatar">
-                <i class="fas fa-robot"></i>
-            </div>
-            <h1 class="hero-name">Bishwash Khanal</h1>
-            <div class="hero-typing">
-                <span class="typing-text" id="typing-text"></span>
-            </div>
-            <div class="hero-location">
-                <i class="fas fa-map-marker-alt"></i>
-                <span>Jyväskylä, Finland</span>
-            </div>
-            <p class="hero-description">
-                MSc AI Student & Research Assistant passionate about LLM fine-tuning, computer vision, and developing innovative AI solutions. 
-                Experience in model compression, 3D mesh processing, and cutting-edge deep learning applications.
-            </p>
-            <div class="hero-buttons">
-                <a href="#experience" class="btn btn-primary">
-                    <i class="fas fa-briefcase"></i> See Experience
-                </a>
-                <a href="#projects" class="btn btn-secondary">
-                    <i class="fas fa-code"></i> View Projects
-                </a>
-            </div>
-        </div>
-        <div class="scroll-indicator">
-            <i class="fas fa-chevron-down"></i>
-        </div>
+      </nav>
     </header>
 
-    <!-- Experience Section -->
-    <section id="experience">
-        <div class="section-header">
-            <h2 class="section-title">Experience</h2>
-            <p class="section-subtitle">My professional journey in AI & Computer Vision</p>
+    <main id="top" tabindex="-1">
+      <section class="hero shell" aria-labelledby="main-title">
+        <div class="hero-copy">
+          <p class="eyebrow">AI Engineer &amp; Researcher</p>
+          <h1 class="title" id="main-title">Bishwash Khanal</h1>
+          <div class="hero-meta">
+            <span>
+              <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+              Espoo, Finland
+            </span>
+            <span>
+              <i class="fas fa-flask" aria-hidden="true"></i>
+              Project Researcher, University of Jyväskylä
+            </span>
+          </div>
+          <p class="hero-text">
+            AI engineer with five years of experience building machine learning
+            systems and taking them to production - fine-tuning and compressing
+            open-weight LLMs, RAG and multi-agent applications, real-time
+            computer vision on edge hardware, and AI governance for AI-native
+            software engineering.
+          </p>
+          <div class="hero-actions" aria-label="Primary links">
+            <a class="btn" href="#publications">
+              <i class="fas fa-book-open" aria-hidden="true"></i>
+              <span>Read Research</span>
+            </a>
+            <a
+              class="social-btn"
+              href="https://github.com/bikhanal"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="GitHub"
+            >
+              <i class="fab fa-github" aria-hidden="true"></i>
+            </a>
+            <a
+              class="social-btn"
+              href="https://www.linkedin.com/in/khanal-bishwash/"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="LinkedIn"
+            >
+              <i class="fab fa-linkedin-in" aria-hidden="true"></i>
+            </a>
+            <a
+              class="social-btn"
+              href="https://orcid.org/0009-0008-6972-4660/"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="ORCID"
+            >
+              <i class="fab fa-orcid" aria-hidden="true"></i>
+            </a>
+          </div>
         </div>
-        <div class="timeline-container">
-            <div class="timeline-line"></div>
-            
-            <div class="timeline-item" onclick="toggleTimeline(this)">
-                <div class="timeline-card">
-                    <span class="timeline-date">Jan 2026 - Present</span>
-                    <h3 class="timeline-role">Research Assistant</h3>
-                    <div class="timeline-company">University of Jyväskylä</div>
-                    <div class="timeline-location">
-                        <i class="fas fa-map-marker-alt"></i> Jyväskylä, Finland
-                    </div>
-                    <p class="timeline-description">
-                        Working on the AI Native Software Engineering (ANSE) Project, exploring AI-driven approaches to software engineering standards.
-                    </p>
-                    <div class="expand-hint">
-                        <span>Learn more</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="timeline-details">
-                        <div class="timeline-details-content">
-                            <h4>Key Focus Areas</h4>
-                            <ul>
-                                <li>Researching AI-native software engineering processes</li>
-                                <li>Exploring AI-generated code integration challenges</li>
-                                <li>Collaborating with cross-functional teams</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      </section>
 
-            <div class="timeline-item" onclick="toggleTimeline(this)">
-                <div class="timeline-card">
-                    <span class="timeline-date">Mar 2024 - Aug 2025</span>
-                    <h3 class="timeline-role">Artificial Intelligence Engineer</h3>
-                    <div class="timeline-company">OptiML Org (Part-time, Remote)</div>
-                    <div class="timeline-location">
-                        <i class="fas fa-map-marker-alt"></i> California, USA
-                    </div>
-                    <p class="timeline-description">
-                        Founding member working on LLM fine-tuning and compression for efficient large model deployment.
-                    </p>
-                    <div class="expand-hint">
-                        <span>Learn more</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="timeline-details">
-                        <div class="timeline-details-content">
-                            <h4>Key Contributions</h4>
-                            <ul>
-                                <li>Developed custom pipeline for LLM fine-tuning & compression</li>
-                                <li>Evaluated domain-specific model performance</li>
-                                <li>Researched SOTA compression techniques</li>
-                            </ul>
-                            <h4>Technologies</h4>
-                            <p>PyTorch, Transformers, PEFT, bitsandbytes</p>
-                            <h4>Models</h4>
-                            <p>Llama, Qwen, Mistral, Gemma, Phi, Deepseek</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="timeline-item" onclick="toggleTimeline(this)">
-                <div class="timeline-card">
-                    <span class="timeline-date">Mar 2021 - Aug 2024</span>
-                    <h3 class="timeline-role">Computer Vision Engineer</h3>
-                    <div class="timeline-company">E.K. Solutions Pvt. Ltd.</div>
-                    <div class="timeline-location">
-                        <i class="fas fa-map-marker-alt"></i> Lalitpur, Nepal
-                    </div>
-                    <p class="timeline-description">
-                        Led multiple computer vision projects including model compression, virtual tours, and facial recognition systems.
-                    </p>
-                    <div class="expand-hint">
-                        <span>Learn more</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="timeline-details">
-                        <div class="timeline-details-content">
-                            <h4>Key Projects</h4>
-                            <ul>
-                                <li><strong>Model Compression (2024):</strong> TensorRT quantization for Jetson AGX Orin</li>
-                                <li><strong>LLM Tools (2023-2024):</strong> RAG-based chatbot and CV analysis tools</li>
-                                <li><strong>Virtual Tours (2022-2024):</strong> 3D mesh generation from iPad Pro Lidar</li>
-                                <li><strong>Landmark Detection (2021):</strong> YOLO models for construction sites</li>
-                                <li><strong>Facial Check-In (2021):</strong> FaceNet-based attendance system</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="timeline-item" onclick="toggleTimeline(this)">
-                <div class="timeline-card">
-                    <span class="timeline-date">Jun 2023 - Oct 2023</span>
-                    <h3 class="timeline-role">Competitive Coder & Data Analyst</h3>
-                    <div class="timeline-company">Scale AI (Freelancing)</div>
-                    <div class="timeline-location">
-                        <i class="fas fa-map-marker-alt"></i> California, USA
-                    </div>
-                    <p class="timeline-description">
-                        Freelance work through Upwork involving data annotations to train Generative AI models.
-                    </p>
-                    <div class="expand-hint">
-                        <span>Learn more</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="timeline-details">
-                        <div class="timeline-details-content">
-                            <h4>Key Activities</h4>
-                            <ul>
-                                <li>Solving competitive programming problems for AI training</li>
-                                <li>Evaluating and ranking AI model responses</li>
-                                <li>Assessing factual accuracy of AI-generated text</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="timeline-item" onclick="toggleTimeline(this)">
-                <div class="timeline-card">
-                    <span class="timeline-date">During Studies</span>
-                    <h3 class="timeline-role">Teaching Assistant</h3>
-                    <div class="timeline-company">Jacobs University Bremen</div>
-                    <div class="timeline-location">
-                        <i class="fas fa-map-marker-alt"></i> Bremen, Germany
-                    </div>
-                    <p class="timeline-description">
-                        Supported students in electronics and communications labs, graded assignments, and conducted tutorials.
-                    </p>
-                    <div class="expand-hint">
-                        <span>Learn more</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="timeline-details">
-                        <div class="timeline-details-content">
-                            <h4>Courses</h4>
-                            <ul>
-                                <li><strong>Intro to Electronics:</strong> KiCAD, LTSpice, PCB simulations</li>
-                                <li><strong>Communications Lab:</strong> C and MATLAB for DSP/communications</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="timeline-item" onclick="toggleTimeline(this)">
-                <div class="timeline-card">
-                    <span class="timeline-date">During Studies</span>
-                    <h3 class="timeline-role">Student Supervisor</h3>
-                    <div class="timeline-company">IRC Library</div>
-                    <div class="timeline-location">
-                        <i class="fas fa-map-marker-alt"></i> Bremen, Germany
-                    </div>
-                    <p class="timeline-description">
-                        Supported students and patrons at the university library, trained new employees.
-                    </p>
-                </div>
-            </div>
+      <section
+        class="about-section shell"
+        id="about"
+        aria-labelledby="about-title"
+      >
+        <p class="section-label">About</p>
+        <div class="section-grid">
+          <h2 id="about-title">Research curiosity, engineering discipline.</h2>
+          <div>
+            <p>
+              I am a project researcher on the AI Native Software Engineering
+              (ANSE) project at the University of Jyväskylä, where I build and
+              evaluate multi-agent systems for code generation under test-driven
+              development - and work out how AI-generated software can meet
+              governance requirements like the EU AI Act and ISO/IEC 42001.
+            </p>
+            <p>
+              Before that I spent four years shipping computer vision in
+              production - quantizing detection and recognition models onto
+              Jetson hardware, building 3D meshes from LiDAR captures, and
+              rolling out an early RAG chatbot across a 300-person organization
+              - and worked as a founding engineer at OptiML on LLM fine-tuning
+              and compression. I hold an M.Sc. in Artificial Intelligence from
+              the University of Jyväskylä and have five publications, two of
+              them peer-reviewed, in
+              <a
+                class="inline-link"
+                href="https://doi.org/10.3389/fcomp.2024.1388174"
+                target="_blank"
+                rel="noreferrer"
+                >computer vision</a
+              >, efficient LLMs, and multi-agent code generation.
+            </p>
+          </div>
         </div>
-    </section>
+      </section>
 
-    <!-- Education Section -->
-    <section id="education">
-        <div class="section-header">
-            <h2 class="section-title">Education</h2>
-            <p class="section-subtitle">Academic background</p>
+      <section
+        class="focus-section shell"
+        id="focus"
+        aria-labelledby="focus-title"
+      >
+        <div class="section-heading">
+          <p class="section-label">Focus</p>
+          <h2 id="focus-title">Where I like to build.</h2>
         </div>
-        <div class="timeline-container">
-            <div class="timeline-line"></div>
-
-            <div class="timeline-item" onclick="toggleTimeline(this)">
-                <div class="timeline-card">
-                    <span class="timeline-date">08.2024 - Present</span>
-                    <h3 class="timeline-role">M.Sc. in Artificial Intelligence</h3>
-                    <div class="timeline-company">University of Jyväskylä</div>
-                    <div class="timeline-location">
-                        <i class="fas fa-map-marker-alt"></i> Jyväskylä, Finland
-                    </div>
-                    <p class="timeline-description">
-                        Advanced studies in AI with focus on deep learning, computer vision, NLP, and agent technology.
-                    </p>
-                    <div class="expand-hint">
-                        <span>View details</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="timeline-details">
-                        <div class="timeline-details-content">
-                            <h4>Relevant Courses</h4>
-                            <ul>
-                                <li>Deep Learning for Cognitive Computing</li>
-                                <li>Computer Vision and Image Analysis</li>
-                                <li>Natural Language Processing</li>
-                                <li>Collective Intelligence and Agent Technology</li>
-                                <li>Semantic Web and Linked Data</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="timeline-item" onclick="toggleTimeline(this)">
-                <div class="timeline-card">
-                    <span class="timeline-date">09.2017 - 08.2020</span>
-                    <h3 class="timeline-role">B.Sc. Electrical & Computer Engineering</h3>
-                    <div class="timeline-company">Jacobs University Bremen</div>
-                    <div class="timeline-location">
-                        <i class="fas fa-map-marker-alt"></i> Bremen, Germany
-                    </div>
-                    <p class="timeline-description">
-                        Graduated with Grade 1.73, Minor in Intelligent Mobile Systems.
-                    </p>
-                    <div class="expand-hint">
-                        <span>View details</span>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                    <div class="timeline-details">
-                        <div class="timeline-details-content">
-                            <h4>Relevant Courses</h4>
-                            <ul>
-                                <li>Signal Processing, Wireless Communication</li>
-                                <li>Machine Learning, Computer Vision</li>
-                                <li>Artificial Intelligence, Robotics</li>
-                                <li>Information Theory, Embedded Systems</li>
-                            </ul>
-                            <h4>Thesis</h4>
-                            <p>Non-Linearity in Wireless Communications and Deep Learning</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="focus-grid">
+          <article class="focus-card">
+            <span class="card-icon">
+              <i class="fas fa-compress-alt" aria-hidden="true"></i>
+            </span>
+            <h3>Efficient LLMs</h3>
+            <p>
+              LoRA/PEFT fine-tuning, quantization, and pruning - keeping
+              task-specific performance intact at half the parameters.
+            </p>
+          </article>
+          <article class="focus-card">
+            <span class="card-icon">
+              <i class="fas fa-diagram-project" aria-hidden="true"></i>
+            </span>
+            <h3>RAG &amp; Multi-Agent Systems</h3>
+            <p>
+              Retrieval pipelines and orchestrated agents that plan, verify, and
+              hand work off to each other.
+            </p>
+          </article>
+          <article class="focus-card">
+            <span class="card-icon">
+              <i class="fas fa-eye" aria-hidden="true"></i>
+            </span>
+            <h3>Vision on the Edge</h3>
+            <p>
+              Real-time detection, recognition, and 3D reconstruction squeezed
+              onto embedded hardware with TensorRT and ONNX.
+            </p>
+          </article>
+          <article class="focus-card">
+            <span class="card-icon">
+              <i class="fas fa-scale-balanced" aria-hidden="true"></i>
+            </span>
+            <h3>AI Governance</h3>
+            <p>
+              Traceability, automated verification, and human oversight built
+              into agentic development workflows.
+            </p>
+          </article>
         </div>
-    </section>
+      </section>
 
-    <!-- Skills Section -->
-    <section id="skills">
-        <div class="section-header">
-            <h2 class="section-title">Skills & Technologies</h2>
-            <p class="section-subtitle">Tools and technologies I work with</p>
+      <section
+        class="entry-section shell"
+        id="experience"
+        aria-labelledby="experience-title"
+      >
+        <div class="section-heading">
+          <p class="section-label">Experience</p>
+          <h2 id="experience-title">Five years of shipping ML systems.</h2>
+        </div>
+        <div class="entry-list">
+          <article class="entry">
+            <div class="entry-meta">
+              <span class="entry-date">Jan 2026 - Present</span>
+              <span>Jyväskylä, Finland · Hybrid</span>
+            </div>
+            <div>
+              <h3 class="entry-role">Project Researcher - ANSE Project</h3>
+              <p class="entry-org">University of Jyväskylä</p>
+              <p class="entry-text">
+                Research assistant Jan–Jun 2026; promoted to project researcher
+                in Jul 2026.
+              </p>
+              <ul class="entry-points">
+                <li>
+                  Build and evaluate multi-agent systems for code generation
+                  under test-driven development, orchestrating LLM agents with
+                  LangGraph and gating each step on automated Pytest runs
+                </li>
+                <li>
+                  Design and iterate on TDD orchestration workflows for
+                  AI-native software engineering
+                </li>
+                <li>
+                  Embed traceability, automated verification, and
+                  human-oversight checkpoints into agentic development
+                  workflows, aligning with EU AI Act and ISO/IEC 42001
+                  requirements
+                </li>
+                <li>
+                  Researched failure modes in agentic TDD pipelines and proposed
+                  practical mitigations; co-authored
+                  <em>TDD Governance for Multi-Agent Code Generation</em>,
+                  published at Prompt SE @ EASE 2026
+                </li>
+                <li>
+                  <strong>Technologies:</strong> Python, LangGraph, OpenAI API,
+                  Pytest, Docker
+                </li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="entry">
+            <div class="entry-meta">
+              <span class="entry-date">Mar 2024 - Aug 2025</span>
+              <span>California, USA · Remote</span>
+            </div>
+            <div>
+              <h3 class="entry-role">Artificial Intelligence Engineer</h3>
+              <p class="entry-org">OptiML - founding team member, part-time</p>
+              <ul class="entry-points">
+                <li>
+                  Developed custom pipelines for fine-tuning and compressing
+                  open-weight LLMs (Llama, Qwen, Mistral, Gemma, Phi, DeepSeek),
+                  applying SparseGPT, Wanda, and magnitude pruning at up to 50%
+                  sparsity - showing that task-specific calibration data
+                  significantly improves downstream performance of compressed
+                  models
+                </li>
+                <li>
+                  Evaluated state-of-the-art LLM compression techniques and
+                  published the results as
+                  <em>Evaluating the Impact of Compression Techniques on
+                  Task-Specific Performance of Large Language Models</em>
+                </li>
+                <li>
+                  Integrated model compression into the fine-tuning workflow to
+                  support efficient deployment at scale
+                </li>
+                <li>
+                  Set up the training stack, experiment tracking, and evaluation
+                  harness as founding engineer
+                </li>
+                <li>
+                  <strong>Technologies:</strong> PyTorch, Transformers, PEFT,
+                  BitsAndBytes, Accelerate, Weights &amp; Biases
+                </li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="entry">
+            <div class="entry-meta">
+              <span class="entry-date">Mar 2021 - Aug 2024</span>
+              <span>Lalitpur, Nepal · On-site</span>
+            </div>
+            <div>
+              <h3 class="entry-role">Computer Vision Engineer</h3>
+              <p class="entry-org">E.K. Solutions Pvt. Ltd.</p>
+              <ul class="entry-points">
+                <li>
+                  Quantized and deployed face detection, recognition, and
+                  swapping models (YOLOv8, ArcFace, Inswapper, StyleGAN2) on
+                  Jetson AGX Orin with INT8/FP16 quantization via PyTorch, ONNX
+                  Runtime, and TensorRT - reaching up to 36 FPS at 640×480,
+                  roughly 2× the FP32 CUDA baseline
+                </li>
+                <li>
+                  Developed an early-adoption RAG chatbot integrating GPT-4 for
+                  project management, database analysis, and bulk CV screening
+                  using LangChain, ChromaDB, and FastAPI, deployed internally
+                  across a 300-employee organization
+                </li>
+                <li>
+                  Generated planar-simplified 3D meshes for virtual tours from
+                  iPad Pro LiDAR captures, implementing custom algorithms for
+                  planar simplification, ICP registration, TSDF volumetric
+                  integration, and MVS texturing
+                </li>
+                <li>
+                  Applied RandLA-Net for semantic segmentation and built the
+                  full-stack pipeline in Python, C++, Swift, and Three.js
+                </li>
+                <li>
+                  <strong>Technologies:</strong> PyTorch, TensorRT, ONNX,
+                  OpenCV, Open3D, LangChain, FastAPI, Celery, NumPy
+                </li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="entry">
+            <div class="entry-meta">
+              <span class="entry-date">2023</span>
+              <span>Remote</span>
+            </div>
+            <div>
+              <h3 class="entry-role">Freelance &amp; Contract Work</h3>
+              <p class="entry-org">GoThru Media · Scale AI</p>
+              <p class="entry-text">
+                Computer vision automation for GoThru Media - automated pose
+                estimation between uncalibrated spherical panoramas, removing a
+                manual production step. LLM training-data evaluation for Scale
+                AI.
+              </p>
+            </div>
+          </article>
+
+          <article class="entry">
+            <div class="entry-meta">
+              <span class="entry-date">2017 - 2020</span>
+              <span>Bremen, Germany</span>
+            </div>
+            <div>
+              <h3 class="entry-role">Teaching Assistant</h3>
+              <p class="entry-org">Jacobs University Bremen</p>
+              <p class="entry-text">
+                Supported students in electronics and communications labs,
+                graded assignments, and ran tutorials alongside my studies.
+              </p>
+              <ul class="entry-points">
+                <li>
+                  <strong>Intro to Electronics:</strong> KiCAD, LTSpice, PCB
+                  simulations
+                </li>
+                <li>
+                  <strong>Communications Lab:</strong> C and MATLAB for DSP and
+                  communications
+                </li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="entry">
+            <div class="entry-meta">
+              <span class="entry-date">2017 - 2020</span>
+              <span>Bremen, Germany</span>
+            </div>
+            <div>
+              <h3 class="entry-role">Student Supervisor</h3>
+              <p class="entry-org">IRC Library, Jacobs University Bremen</p>
+              <p class="entry-text">
+                Supported students and patrons at the university library and
+                trained new employees.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section
+        class="entry-section shell"
+        id="education"
+        aria-labelledby="education-title"
+      >
+        <div class="section-heading">
+          <p class="section-label">Education</p>
+          <h2 id="education-title">Academic background.</h2>
+        </div>
+        <div class="entry-list">
+          <article class="entry">
+            <div class="entry-meta">
+              <span class="entry-date">Aug 2024 - Jul 2026</span>
+              <span>Jyväskylä, Finland</span>
+            </div>
+            <div>
+              <h3 class="entry-role">M.Sc. in Artificial Intelligence</h3>
+              <p class="entry-org">University of Jyväskylä</p>
+              <p class="entry-text">
+                Grade 5/5. Awarded the JYU Rector's Scholarship for exceptional
+                academic achievement.
+              </p>
+              <ul class="entry-points">
+                <li>
+                  <strong>Thesis:</strong> From General Description to Expert
+                  Critique - Modular LoRA Adapters for Domain-Specific
+                  Photographic Assessment
+                </li>
+                <li>
+                  Deep Learning for Cognitive Computing, Natural Language
+                  Processing, Computer Vision and Image Analysis, Semantic Web,
+                  SOA and Cloud Computing
+                </li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="entry">
+            <div class="entry-meta">
+              <span class="entry-date">Sep 2017 - Aug 2020</span>
+              <span>Bremen, Germany</span>
+            </div>
+            <div>
+              <h3 class="entry-role">
+                B.Sc. in Electrical &amp; Computer Engineering
+              </h3>
+              <p class="entry-org">Jacobs University Bremen</p>
+              <p class="entry-text">
+                Grade 1.73, minor in Intelligent Mobile Systems. Merit-Based
+                Scholarship for academic achievement.
+              </p>
+              <ul class="entry-points">
+                <li>
+                  <strong>Thesis:</strong> Non-Linearity in Wireless
+                  Communications and Deep Learning
+                </li>
+                <li>
+                  Machine Learning, Computer Vision, Artificial Intelligence,
+                  Signal Processing, Robotics
+                </li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section
+        class="skills-section shell"
+        id="skills"
+        aria-labelledby="skills-title"
+      >
+        <div class="section-heading">
+          <p class="section-label">Skills</p>
+          <h2 id="skills-title">Tools and technologies I work with.</h2>
         </div>
         <div class="skills-grid">
-            <div class="skill-category">
-                <div class="skill-category-header">
-                    <div class="skill-icon">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <h3 class="skill-category-title">Programming</h3>
-                </div>
-                <div class="skill-tags">
-                    <span class="skill-tag">Python</span>
-                    <span class="skill-tag">C</span>
-                    <span class="skill-tag">C++</span>
-                    <span class="skill-tag">MATLAB</span>
-                    <span class="skill-tag">Java</span>
-                </div>
+          <article class="skill-card">
+            <h3><i class="fas fa-code" aria-hidden="true"></i> Programming</h3>
+            <div class="tag-list">
+              <span class="tag">Python</span>
+              <span class="tag">C++</span>
+              <span class="tag">C</span>
+              <span class="tag">SQL</span>
+              <span class="tag">Java</span>
+              <span class="tag">MATLAB</span>
             </div>
+          </article>
 
-            <div class="skill-category">
-                <div class="skill-category-header">
-                    <div class="skill-icon">
-                        <i class="fas fa-brain"></i>
-                    </div>
-                    <h3 class="skill-category-title">ML Frameworks</h3>
-                </div>
-                <div class="skill-tags">
-                    <span class="skill-tag">PyTorch</span>
-                    <span class="skill-tag">TensorFlow</span>
-                    <span class="skill-tag">Keras</span>
-                    <span class="skill-tag">Transformers</span>
-                </div>
+          <article class="skill-card">
+            <h3>
+              <i class="fas fa-brain" aria-hidden="true"></i> LLMs &amp;
+              Generative AI
+            </h3>
+            <div class="tag-list">
+              <span class="tag">Fine-tuning (LoRA/PEFT)</span>
+              <span class="tag">Quantization</span>
+              <span class="tag">Model compression</span>
+              <span class="tag">RAG</span>
+              <span class="tag">Multi-agent systems</span>
+              <span class="tag">Prompt engineering</span>
+              <span class="tag">LLM evaluation</span>
+              <span class="tag">Transformers</span>
+              <span class="tag">LangChain</span>
+              <span class="tag">LangGraph</span>
+              <span class="tag">OpenAI API</span>
+              <span class="tag">vLLM</span>
+              <span class="tag">MCP</span>
             </div>
+          </article>
 
-            <div class="skill-category">
-                <div class="skill-category-header">
-                    <div class="skill-icon">
-                        <i class="fas fa-network-wired"></i>
-                    </div>
-                    <h3 class="skill-category-title">ML Models</h3>
-                </div>
-                <div class="skill-tags">
-                    <span class="skill-tag">LLMs</span>
-                    <span class="skill-tag">CNNs</span>
-                    <span class="skill-tag">GANs</span>
-                    <span class="skill-tag">YOLO</span>
-                    <span class="skill-tag">Vision Transformers</span>
-                </div>
+          <article class="skill-card">
+            <h3>
+              <i class="fas fa-eye" aria-hidden="true"></i> ML &amp; Computer
+              Vision
+            </h3>
+            <div class="tag-list">
+              <span class="tag">PyTorch</span>
+              <span class="tag">TensorFlow</span>
+              <span class="tag">CNNs</span>
+              <span class="tag">GANs</span>
+              <span class="tag">Transformers</span>
+              <span class="tag">OpenCV</span>
+              <span class="tag">Open3D</span>
+              <span class="tag">TensorRT</span>
+              <span class="tag">ONNX</span>
             </div>
+          </article>
 
-            <div class="skill-category">
-                <div class="skill-category-header">
-                    <div class="skill-icon">
-                        <i class="fas fa-cloud"></i>
-                    </div>
-                    <h3 class="skill-category-title">Tools & Cloud</h3>
-                </div>
-                <div class="skill-tags">
-                    <span class="skill-tag">Docker</span>
-                    <span class="skill-tag">FastAPI</span>
-                    <span class="skill-tag">Git</span>
-                    <span class="skill-tag">Linux</span>
-                </div>
+          <article class="skill-card">
+            <h3>
+              <i class="fas fa-cloud" aria-hidden="true"></i> Cloud &amp; MLOps
+            </h3>
+            <div class="tag-list">
+              <span class="tag">Azure ML</span>
+              <span class="tag">AWS</span>
+              <span class="tag">Vertex AI</span>
+              <span class="tag">Docker</span>
+              <span class="tag">Kubernetes</span>
+              <span class="tag">Git</span>
+              <span class="tag">GitHub Actions</span>
+              <span class="tag">Pytest</span>
+              <span class="tag">Weights &amp; Biases</span>
+              <span class="tag">FastAPI</span>
             </div>
+          </article>
 
-            <div class="skill-category">
-                <div class="skill-category-header">
-                    <div class="skill-icon">
-                        <i class="fas fa-database"></i>
-                    </div>
-                    <h3 class="skill-category-title">Data & CV</h3>
-                </div>
-                <div class="skill-tags">
-                    <span class="skill-tag">OpenCV</span>
-                    <span class="skill-tag">Pandas</span>
-                    <span class="skill-tag">NumPy</span>
-                    <span class="skill-tag">MySQL</span>
-                </div>
+          <article class="skill-card">
+            <h3><i class="fas fa-database" aria-hidden="true"></i> Data</h3>
+            <div class="tag-list">
+              <span class="tag">PostgreSQL</span>
+              <span class="tag">MySQL</span>
+              <span class="tag">ChromaDB</span>
+              <span class="tag">Vector search</span>
+              <span class="tag">NumPy</span>
+              <span class="tag">Pandas</span>
             </div>
+          </article>
 
-            <div class="skill-category">
-                <div class="skill-category-header">
-                    <div class="skill-icon">
-                        <i class="fas fa-laptop-code"></i>
-                    </div>
-                    <h3 class="skill-category-title">Environments</h3>
-                </div>
-                <div class="skill-tags">
-                    <span class="skill-tag">Linux</span>
-                    <span class="skill-tag">Unix</span>
-                    <span class="skill-tag">VS Code</span>
-                    <span class="skill-tag">LaTeX</span>
-                </div>
+          <article class="skill-card">
+            <h3>
+              <i class="fas fa-language" aria-hidden="true"></i> Languages
+            </h3>
+            <div class="tag-list">
+              <span class="tag">English - fluent</span>
+              <span class="tag">Nepali - native</span>
+              <span class="tag">German - A2</span>
+              <span class="tag">Finnish - basics</span>
             </div>
+          </article>
         </div>
-    </section>
+      </section>
 
-    <!-- Projects Section -->
-    <section id="projects">
-        <div class="section-header">
-            <h2 class="section-title">Featured Projects</h2>
-            <p class="section-subtitle">Some of my recent work and contributions</p>
+      <section
+        class="projects-section shell"
+        id="projects"
+        aria-labelledby="projects-title"
+      >
+        <div class="section-heading">
+          <p class="section-label">Projects</p>
+          <h2 id="projects-title">Selected work and experiments.</h2>
         </div>
         <div class="projects-grid">
-            <div class="project-card" onclick="openModal('modal-nepali')">
-                <div class="project-image">
-                    <i class="fas fa-language"></i>
-                </div>
-                <div class="project-content">
-                    <div class="project-type">Research</div>
-                    <h3 class="project-title">Nepali OCR using ViT</h3>
-                    <p class="project-description">
-                        Vision transformers for Nepali text detection with RoBERTa-based tokenizer.
-                    </p>
-                    <div class="project-tech">
-                        <span>Python</span>
-                        <span>Transformers</span>
-                        <span>RoBERTa</span>
-                    </div>
-                </div>
+          <article class="project-card">
+            <span class="project-type">M.Sc. Thesis</span>
+            <h3>SE-MoLoRA - Shared-Expert LoRA Adapters</h3>
+            <p>
+              A modular parameter-efficient architecture - an always-active
+              rank-64 shared LoRA expert plus query-routed rank-32 specialists
+              on a frozen Qwen3-VL-8B - that turns a general vision–language
+              model into a domain-expert photographic critic. Nearly doubles
+              BERTScore-F1 over monolithic LoRA (0.23 → 0.42) and wins 84.6% of
+              GPT-4o-judged pairwise comparisons with fewer active parameters.
+            </p>
+            <div class="tag-list">
+              <span class="tag">Qwen3-VL</span>
+              <span class="tag">LoRA</span>
+              <span class="tag">VLM</span>
+              <span class="tag">PEFT</span>
             </div>
+            <div class="card-links">
+              <a
+                class="card-link"
+                href="https://github.com/bikhanal/semolora"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <i class="fab fa-github" aria-hidden="true"></i> View Code
+              </a>
+              <a
+                class="card-link"
+                href="https://arxiv.org/abs/2608.17514"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <i class="fas fa-file-lines" aria-hidden="true"></i> Read Paper
+              </a>
+            </div>
+          </article>
 
-            <div class="project-card" onclick="openModal('modal-face')">
-                <div class="project-image">
-                    <i class="fas fa-user-secret"></i>
-                </div>
-                <div class="project-content">
-                    <div class="project-type">Deep Learning</div>
-                    <h3 class="project-title">Face Generator (GANs)</h3>
-                    <p class="project-description">
-                        Explored VAE, DCGAN, and WGAN for generating synthetic facial images.
-                    </p>
-                    <div class="project-tech">
-                        <span>PyTorch</span>
-                        <span>GANs</span>
-                        <span>VAE</span>
-                    </div>
-                </div>
+          <article class="project-card">
+            <span class="project-type">Full-Stack AI</span>
+            <h3>Lawgic - Legal Document Analysis</h3>
+            <p>
+              A full-stack legal document analysis platform built with FastAPI
+              and React, wired to an external OCR microservice for PDF uploads.
+              Includes a conversational interface with multilingual translation,
+              semantic annotations, and automated legal analysis.
+            </p>
+            <div class="tag-list">
+              <span class="tag">FastAPI</span>
+              <span class="tag">React</span>
+              <span class="tag">OCR</span>
+              <span class="tag">LLMs</span>
             </div>
+            <div class="card-links">
+              <a
+                class="card-link"
+                href="https://github.com/bikhanal/lawgic"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <i class="fab fa-github" aria-hidden="true"></i> View Code
+              </a>
+            </div>
+          </article>
 
-            <div class="project-card" onclick="openModal('modal-asl')">
-                <div class="project-image">
-                    <i class="fas fa-hands"></i>
-                </div>
-                <div class="project-content">
-                    <div class="project-type">Kaggle</div>
-                    <h3 class="project-title">ASL Recognition</h3>
-                    <p class="project-description">
-                        TFLite model for ASL gestures. Ranked 371/1315 teams.
-                    </p>
-                    <div class="project-tech">
-                        <span>TensorFlow</span>
-                        <span>MediaPipe</span>
-                    </div>
-                </div>
+          <article class="project-card">
+            <span class="project-type">Multi-Agent</span>
+            <h3>Automated Literature Review</h3>
+            <p>
+              A multi-agent system that turns a natural-language research
+              question into a synthesized literature report: agents generate
+              arXiv queries, filter for relevance, retrieve papers, extract
+              methodology and findings, and surface common themes and research
+              gaps. Built on BDI-style reasoning with SPADE and AgentSpeak.
+            </p>
+            <div class="tag-list">
+              <span class="tag">SPADE</span>
+              <span class="tag">AgentSpeak</span>
+              <span class="tag">Gemini API</span>
+              <span class="tag">arXiv API</span>
             </div>
+            <div class="card-links">
+              <a
+                class="card-link"
+                href="https://github.com/bikhanal/agentic_technologies_project"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <i class="fab fa-github" aria-hidden="true"></i> View Code
+              </a>
+            </div>
+          </article>
 
-            <div class="project-card" onclick="openModal('modal-bbdc')">
-                <div class="project-image">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <div class="project-content">
-                    <div class="project-type">Data Science</div>
-                    <h3 class="project-title">Bremen Big Data 2020</h3>
-                    <p class="project-description">
-                        U-Net and LSTM for hand movement prediction from EMG data. Ranked 12/31.
-                    </p>
-                    <div class="project-tech">
-                        <span>TensorFlow</span>
-                        <span>U-Net</span>
-                        <span>LSTM</span>
-                    </div>
-                </div>
+          <article class="project-card">
+            <span class="project-type">Research</span>
+            <h3>Nepali OCR using Vision Transformers</h3>
+            <p>
+              Inspired by TrOCR - a RoBERTa-based tokenizer and encoder trained
+              on Nepali datasets for vision-based text detection.
+            </p>
+            <div class="tag-list">
+              <span class="tag">Python</span>
+              <span class="tag">Transformers</span>
+              <span class="tag">RoBERTa</span>
             </div>
+            <div class="card-links">
+              <a
+                class="card-link"
+                href="https://github.com/bikhanal/nepali-roberta"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <i class="fab fa-github" aria-hidden="true"></i> View Code
+              </a>
+            </div>
+          </article>
 
-            <div class="project-card" onclick="openModal('modal-thesis')">
-                <div class="project-image">
-                    <i class="fas fa-graduation-cap"></i>
-                </div>
-                <div class="project-content">
-                    <div class="project-type">Thesis</div>
-                    <h3 class="project-title">Wireless & Deep Learning</h3>
-                    <p class="project-description">
-                        Deep learning for modeling non-linearities in wireless communications.
-                    </p>
-                    <div class="project-tech">
-                        <span>Python</span>
-                        <span>Deep Learning</span>
-                    </div>
-                </div>
+          <article class="project-card">
+            <span class="project-type">Kaggle</span>
+            <h3>ASL Fingerspelling Recognition</h3>
+            <p>
+              TFLite model trained on MediaPipe Holistic landmark data for
+              translating American Sign Language gestures. Ranked 371 of 1315
+              teams.
+            </p>
+            <div class="tag-list">
+              <span class="tag">TensorFlow</span>
+              <span class="tag">MediaPipe</span>
             </div>
+            <div class="card-links">
+              <a
+                class="card-link"
+                href="https://github.com/bikhanal/gaslfr-kaggle"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <i class="fab fa-github" aria-hidden="true"></i> ASL Recognition
+              </a>
+              <a
+                class="card-link"
+                href="https://github.com/bikhanal/gislr-kaggle"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <i class="fab fa-github" aria-hidden="true"></i> ISL Recognition
+              </a>
+            </div>
+          </article>
 
-            <div class="project-card" onclick="openModal('modal-llm-compression')">
-                <div class="project-image">
-                    <i class="fas fa-compress-alt"></i>
-                </div>
-                <div class="project-content">
-                    <div class="project-type">Research Paper</div>
-                    <h3 class="project-title">LLM Compression Impact</h3>
-                    <p class="project-description">
-                        Evaluating compression techniques on LLM task-specific performance.
-                    </p>
-                    <div class="project-tech">
-                        <span>LLMs</span>
-                        <span>Quantization</span>
-                    </div>
-                </div>
+          <article class="project-card">
+            <span class="project-type">B.Sc. Thesis</span>
+            <h3>Wireless Communications &amp; Deep Learning</h3>
+            <p>
+              Modeled the physical layer of a wireless system with autoencoders,
+              introducing a mathematical model of 4PAM constellation mapping
+              under non-Gaussian channel noise - and learned noise-adaptive
+              mappings for higher-order constellations.
+            </p>
+            <div class="tag-list">
+              <span class="tag">Python</span>
+              <span class="tag">Autoencoders</span>
+              <span class="tag">DSP</span>
             </div>
+            <div class="card-links">
+              <a
+                class="card-link"
+                href="https://github.com/bikhanal/bachelors-thesis"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <i class="fab fa-github" aria-hidden="true"></i> View Thesis
+              </a>
+            </div>
+          </article>
         </div>
-    </section>
+      </section>
 
-    <!-- Certifications Section - Fun Interactive -->
-    <section id="certifications">
-        <div class="section-header">
-            <h2 class="section-title">Certifications</h2>
-            <p class="section-subtitle">Specializations and courses completed</p>
-        </div>
-        <div class="certs-grid">
-            <a href="https://www.coursera.org/account/accomplishments/specialization/certificate/YRHJSZ57BE2Z" target="_blank" class="cert-card">
-                <div class="cert-icon">🧠</div>
-                <div class="cert-name">Deep Learning Specialization</div>
-                <div class="cert-provider">Coursera</div>
-            </a>
-
-            <a href="https://www.coursera.org/account/accomplishments/specialization/certificate/YGYXG88RUN92" target="_blank" class="cert-card">
-                <div class="cert-icon">📝</div>
-                <div class="cert-name">NLP Specialization</div>
-                <div class="cert-provider">Coursera</div>
-            </a>
-
-            <a href="https://www.coursera.org/account/accomplishments/specialization/certificate/VXPCQAAHPVRX" target="_blank" class="cert-card">
-                <div class="cert-icon">🎨</div>
-                <div class="cert-name">GAN Specialization</div>
-                <div class="cert-provider">Coursera</div>
-            </a>
-
-            <a href="https://www.coursera.org/account/accomplishments/specialization/certificate/MX76FSN5JMVF" target="_blank" class="cert-card">
-                <div class="cert-icon">⚙️</div>
-                <div class="cert-name">ML Specialization</div>
-                <div class="cert-provider">Coursera</div>
-            </a>
-
-            <a href="https://www.coursera.org/account/accomplishments/specialization/certificate/TYBHYGFK5PJH" target="_blank" class="cert-card">
-                <div class="cert-icon">🚀</div>
-                <div class="cert-name">MLOps Specialization</div>
-                <div class="cert-provider">Coursera</div>
-            </a>
-
-            <a href="https://www.coursera.org/account/accomplishments/specialization/certificate/7ACJ3VDPBKH3" target="_blank" class="cert-card">
-                <div class="cert-icon">🔧</div>
-                <div class="cert-name">TensorFlow Developer</div>
-                <div class="cert-provider">DeepLearning.AI</div>
-            </a>
-
-            <a href="https://www.coursera.org/account/accomplishments/specialization/certificate/JNRTRQ76Y5KP" target="_blank" class="cert-card">
-                <div class="cert-icon">🗄️</div>
-                <div class="cert-name">Database Engineer</div>
-                <div class="cert-provider">Meta</div>
-            </a>
-        </div>
-    </section>
-
-    <!-- Publications Section -->
-    <section id="publications">
-        <div class="section-header">
-            <h2 class="section-title">Publications</h2>
-            <p class="section-subtitle">Research papers and academic contributions</p>
+      <section
+        class="publications-section shell"
+        id="publications"
+        aria-labelledby="publications-title"
+      >
+        <div class="section-heading">
+          <p class="section-label">Publications</p>
+          <h2 id="publications-title">Papers and academic contributions.</h2>
         </div>
         <div class="publications-list">
-            <div class="publication-card" onclick="openModal('modal-paper4')">
-                <span class="publication-year">2026</span>
-                <div class="publication-title">
-                    TDD Governance for Multi-Agent Code Generation via Prompt Engineering
-                </div>
-                <div class="publication-authors">T. Hasanli, S. Siddeeq, B. Khanal, P. Kotilainen, T. Mikkonen, P. Abrahamsson</div>
-                <div class="publication-venue">PROMPT-SE, EASE 2026</div>
+          <article class="publication">
+            <div class="publication-meta">
+              <span class="publication-year">2026</span>
+              <span>Preprint · arXiv:2608.17514</span>
             </div>
-
-            <div class="publication-card" onclick="openModal('modal-paper1')">
-                <span class="publication-year">2024</span>
-                <div class="publication-title">
-                    Alignment of 360° images with posed color images for locally accurate texturing
-                </div>
-                <div class="publication-authors">B. Khanal, M. Om, S. Rijal, V. Ojha</div>
-                <div class="publication-venue">Frontiers in Computer Science</div>
-            </div>
-
-            <div class="publication-card" onclick="openModal('modal-paper2')">
-                <span class="publication-year">2024</span>
-                <div class="publication-title">
-                    Structure-preserving Planar Simplification for Indoor Environments
-                </div>
-                <div class="publication-authors">B. Khanal, S. Rijal, M. Awale, V. Ojha</div>
-                <div class="publication-venue">arXiv</div>
-            </div>
-
-            <div class="publication-card" onclick="openModal('modal-paper3')">
-                <span class="publication-year">2024</span>
-                <div class="publication-title">
-                    Evaluating Compression Techniques on Task-Specific LLM Performance
-                </div>
-                <div class="publication-authors">B. Khanal, J. M. Capone</div>
-                <div class="publication-venue">arXiv</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Connect Section - Fun Links -->
-    <section id="connect">
-        <div class="section-header">
-            <h2 class="section-title">Let's Connect</h2>
-            <p class="section-subtitle">Find me across the web</p>
-        </div>
-        <div class="connect-section">
-            <p class="connect-message">
-                I'm always interested in hearing about new projects, research opportunities, 
-                or just connecting with fellow AI enthusiasts!
-            </p>
-            
-            <div class="fun-links-grid">
-                <a href="https://github.com/bikhanal" target="_blank" class="fun-link-card">
-                    <i class="fab fa-github"></i>
-                    <span>GitHub</span>
+            <div>
+              <h3>
+                SE-MoLoRA: Shared-Expert LoRA Adapters for Domain-Specific
+                Photographic Assessment
+              </h3>
+              <p class="publication-authors">
+                <strong>B. Khanal</strong>, A. Zhang, S. Tarkoma, T. Mikkonen,
+                A. Kumar
+              </p>
+              <p class="publication-abstract">
+                A hierarchical parameter-efficient architecture pairing an
+                always-active rank-64 shared LoRA expert with query-routed
+                rank-32 specialists on a frozen Qwen3-VL-8B backbone, trained on
+                ~47K domain-labeled samples. Nearly doubles BERTScore-F1 over a
+                monolithic LoRA baseline and reduces specialist entanglement
+                while using fewer active parameters.
+              </p>
+              <div class="card-links">
+                <a
+                  class="card-link"
+                  href="https://arxiv.org/abs/2608.17514"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <i
+                    class="fas fa-arrow-up-right-from-square"
+                    aria-hidden="true"
+                  ></i>
+                  Read Paper
                 </a>
-                <a href="https://www.linkedin.com/in/khanal-bishwash/" target="_blank" class="fun-link-card">
-                    <i class="fab fa-linkedin"></i>
-                    <span>LinkedIn</span>
+                <a
+                  class="card-link"
+                  href="https://github.com/bikhanal/semolora"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <i class="fab fa-github" aria-hidden="true"></i> Code
                 </a>
-                <a href="https://orcid.org/0009-0008-6972-4660/" target="_blank" class="fun-link-card">
-                    <i class="fab fa-orcid"></i>
-                    <span>ORCID</span>
-                </a>
-                <a href="cv.pdf" download class="fun-link-card">
-                    <i class="fas fa-file-pdf"></i>
-                    <span>Download CV</span>
-                </a>
+              </div>
             </div>
-        </div>
-    </section>
+          </article>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-text">
-            &copy; 2025 Bishwash Khanal. Built with <i class="fas fa-heart" style="color: #e11d48;"></i> and <i class="fas fa-brain" style="color: #8b5cf6;"></i>
+          <article class="publication">
+            <div class="publication-meta">
+              <span class="publication-year">2026</span>
+              <span>Peer-reviewed conference · Prompt SE @ EASE 2026</span>
+            </div>
+            <div>
+              <h3>
+                TDD Governance for Multi-Agent Code Generation via Prompt
+                Engineering
+              </h3>
+              <p class="publication-authors">
+                T. Hasanli, S. Siddeeq, <strong>B. Khanal</strong>, P.
+                Kotilainen, T. Mikkonen, P. Abrahamsson
+              </p>
+              <p class="publication-abstract">
+                An AI-native TDD framework that turns classical TDD principles
+                into prompt- and workflow-level governance: phase ordering,
+                bounded repair loops, validation gates, and atomic mutation
+                control.
+              </p>
+              <div class="card-links">
+                <a
+                  class="card-link"
+                  href="https://doi.org/10.48550/arXiv.2604.26615"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <i
+                    class="fas fa-arrow-up-right-from-square"
+                    aria-hidden="true"
+                  ></i>
+                  Read Paper
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <article class="publication">
+            <div class="publication-meta">
+              <span class="publication-year">2024</span>
+              <span>Peer-reviewed journal · Frontiers in Computer Science</span>
+            </div>
+            <div>
+              <h3>
+                Alignment of a 360° image with posed color images for locally
+                accurate texturing of 3D mesh
+              </h3>
+              <p class="publication-authors">
+                <strong>B. Khanal</strong>, M. Om, S. Rijal, V. Ojha
+              </p>
+              <p class="publication-abstract">
+                A rigorous approach to aligning an equirectangular 360° image
+                with a 3D model built from posed perspective images, using
+                non-linear least squares optimization guided by a custom
+                objective function and a ray-tracing texturing algorithm.
+                Frontiers in Computer Science, Vol. 6.
+              </p>
+              <div class="card-links">
+                <a
+                  class="card-link"
+                  href="https://doi.org/10.3389/fcomp.2024.1388174"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <i
+                    class="fas fa-arrow-up-right-from-square"
+                    aria-hidden="true"
+                  ></i>
+                  Read Paper
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <article class="publication">
+            <div class="publication-meta">
+              <span class="publication-year">2024</span>
+              <span>Preprint · arXiv:2408.06814</span>
+            </div>
+            <div>
+              <h3>
+                Structure-preserving Planar Simplification for Indoor
+                Environments
+              </h3>
+              <p class="publication-authors">
+                <strong>B. Khanal</strong>, S. Rijal, M. Awale, V. Ojha
+              </p>
+              <p class="publication-abstract">
+                Simplification of real environments captured with iPad Pro LiDAR
+                and simulated ones from Replica and Matterport3D - RANSAC
+                primitive plane extraction for ceilings, walls, and floors, plus
+                custom vertex translation and mesh clipping to produce a
+                watertight layout.
+              </p>
+              <div class="card-links">
+                <a
+                  class="card-link"
+                  href="https://doi.org/10.48550/arXiv.2408.06814"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <i
+                    class="fas fa-arrow-up-right-from-square"
+                    aria-hidden="true"
+                  ></i>
+                  Read Paper
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <article class="publication">
+            <div class="publication-meta">
+              <span class="publication-year">2024</span>
+              <span>Preprint · arXiv:2409.11233</span>
+            </div>
+            <div>
+              <h3>
+                Evaluating the Impact of Compression Techniques on Task-Specific
+                Performance of Large Language Models
+              </h3>
+              <p class="publication-authors">
+                <strong>B. Khanal</strong>, J. M. Capone
+              </p>
+              <p class="publication-abstract">
+                An evaluation of SparseGPT, Wanda, and magnitude pruning on
+                open-weight LLMs, showing that task-specific calibration data
+                significantly improves the downstream performance of compressed
+                models.
+              </p>
+              <div class="card-links">
+                <a
+                  class="card-link"
+                  href="https://doi.org/10.48550/arXiv.2409.11233"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <i
+                    class="fas fa-arrow-up-right-from-square"
+                    aria-hidden="true"
+                  ></i>
+                  Read Paper
+                </a>
+              </div>
+            </div>
+          </article>
         </div>
+      </section>
+
+      <section
+        class="certs-section shell"
+        id="certifications"
+        aria-labelledby="certs-title"
+      >
+        <div class="section-heading">
+          <p class="section-label">Certifications</p>
+          <h2 id="certs-title">Specializations completed.</h2>
+        </div>
+        <div class="certs-grid">
+          <a
+            class="cert-card"
+            href="https://www.coursera.org/account/accomplishments/specialization/certificate/YRHJSZ57BE2Z"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span class="cert-icon" aria-hidden="true">🧠</span>
+            <span>
+              <span class="cert-name">Deep Learning Specialization</span>
+              <span class="cert-provider">Coursera</span>
+            </span>
+          </a>
+          <a
+            class="cert-card"
+            href="https://www.coursera.org/account/accomplishments/specialization/certificate/YGYXG88RUN92"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span class="cert-icon" aria-hidden="true">📝</span>
+            <span>
+              <span class="cert-name">NLP Specialization</span>
+              <span class="cert-provider">Coursera</span>
+            </span>
+          </a>
+          <a
+            class="cert-card"
+            href="https://www.coursera.org/account/accomplishments/specialization/certificate/VXPCQAAHPVRX"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span class="cert-icon" aria-hidden="true">🎨</span>
+            <span>
+              <span class="cert-name">GAN Specialization</span>
+              <span class="cert-provider">Coursera</span>
+            </span>
+          </a>
+          <a
+            class="cert-card"
+            href="https://www.coursera.org/account/accomplishments/specialization/certificate/MX76FSN5JMVF"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span class="cert-icon" aria-hidden="true">⚙️</span>
+            <span>
+              <span class="cert-name">ML Specialization</span>
+              <span class="cert-provider">Coursera</span>
+            </span>
+          </a>
+          <a
+            class="cert-card"
+            href="https://www.coursera.org/account/accomplishments/specialization/certificate/TYBHYGFK5PJH"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span class="cert-icon" aria-hidden="true">🚀</span>
+            <span>
+              <span class="cert-name">MLOps Specialization</span>
+              <span class="cert-provider">Coursera</span>
+            </span>
+          </a>
+          <a
+            class="cert-card"
+            href="https://www.coursera.org/account/accomplishments/specialization/certificate/7ACJ3VDPBKH3"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span class="cert-icon" aria-hidden="true">🔧</span>
+            <span>
+              <span class="cert-name">TensorFlow Developer</span>
+              <span class="cert-provider">DeepLearning.AI</span>
+            </span>
+          </a>
+          <a
+            class="cert-card"
+            href="https://www.coursera.org/account/accomplishments/specialization/certificate/JNRTRQ76Y5KP"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span class="cert-icon" aria-hidden="true">🗄️</span>
+            <span>
+              <span class="cert-name">Database Engineer</span>
+              <span class="cert-provider">Meta</span>
+            </span>
+          </a>
+        </div>
+      </section>
+
+      <section
+        class="contact-section shell"
+        id="contact"
+        aria-labelledby="contact-title"
+      >
+        <div>
+          <p class="section-label">Contact</p>
+          <h2 id="contact-title">Let's work on something meaningful.</h2>
+          <p class="contact-text">
+            Always interested in new projects, research collaborations, or just
+            connecting with fellow AI enthusiasts.
+          </p>
+        </div>
+        <div class="contact-actions">
+          <a
+            class="btn"
+            href="https://www.linkedin.com/in/khanal-bishwash/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <i class="fab fa-linkedin-in" aria-hidden="true"></i>
+            <span>Connect on LinkedIn</span>
+          </a>
+          <a
+            class="social-btn"
+            href="https://github.com/bikhanal"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="GitHub"
+          >
+            <i class="fab fa-github" aria-hidden="true"></i>
+          </a>
+          <a
+            class="social-btn"
+            href="https://orcid.org/0009-0008-6972-4660/"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="ORCID"
+          >
+            <i class="fab fa-orcid" aria-hidden="true"></i>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; 2026 Bishwash Khanal. All rights reserved.</p>
     </footer>
 
-    <!-- Modal Overlay -->
-    <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="modal-close" onclick="closeModal()">
-                <i class="fas fa-times"></i>
-            </div>
-            <div id="modal-body"></div>
-        </div>
-    </div>
-
     <script>
-        // Particle Animation
-        const canvas = document.getElementById('particles-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+      const jumpToPageTop = () => {
+        if (window.location.hash) {
+          return;
         }
 
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 0.5;
-                this.vy = (Math.random() - 0.5) * 0.5;
-                this.size = Math.random() * 2 + 1;
-            }
+        const originalBehavior = document.documentElement.style.scrollBehavior;
+        document.documentElement.style.scrollBehavior = "auto";
+        window.scrollTo(0, 0);
+        document.documentElement.style.scrollBehavior = originalBehavior;
+      };
 
-            draw() {
-                ctx.fillStyle = 'rgba(56, 189, 248, 0.6)';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.closePath();
-                ctx.fill();
-            }
+      jumpToPageTop();
+      window.addEventListener("pageshow", jumpToPageTop);
+      window.addEventListener("load", jumpToPageTop);
 
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
+      const navLinks = document.querySelectorAll(
+        '.nav-brand[href^="#"], .nav-links a[href^="#"]',
+      );
+      const navToggle = document.querySelector(".nav-toggle");
+      const navPanel = document.querySelector(".nav-panel");
 
-                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-            }
+      const closeNav = () => {
+        document.body.classList.remove("nav-open");
+        navToggle.setAttribute("aria-expanded", "false");
+        navToggle.setAttribute("aria-label", "Open navigation");
+      };
+
+      const openNav = () => {
+        document.body.classList.add("nav-open");
+        navToggle.setAttribute("aria-expanded", "true");
+        navToggle.setAttribute("aria-label", "Close navigation");
+      };
+
+      navToggle.addEventListener("click", () => {
+        if (document.body.classList.contains("nav-open")) {
+          closeNav();
+        } else {
+          openNav();
         }
+      });
 
-        function initParticles() {
-            particles = [];
-            const particleCount = Math.min(80, Math.floor(window.innerWidth / 12));
-            for (let i = 0; i < particleCount; i++) {
-                particles.push(new Particle());
-            }
-        }
+      navLinks.forEach((link) => {
+        link.addEventListener("click", function (e) {
+          e.preventDefault();
 
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const targetId = this.getAttribute("href");
+          const targetSection = document.querySelector(targetId);
 
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].draw();
-                particles[i].update();
-
-                for (let j = i; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-
-                    if (distance < 100) {
-                        ctx.beginPath();
-                        ctx.strokeStyle = `rgba(56, 189, 248, ${0.12 - distance / 800})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-
-            requestAnimationFrame(animateParticles);
-        }
-
-        resizeCanvas();
-        initParticles();
-        animateParticles();
-
-        window.addEventListener('resize', () => {
-            resizeCanvas();
-            initParticles();
-        });
-
-        // Typing Effect
-        const titles = ['AI Engineer', 'Computer Vision Researcher', 'LLM Specialist', 'Deep Learning Developer'];
-        let titleIndex = 0;
-        let charIndex = 0;
-        let isDeleting = false;
-        const typingElement = document.getElementById('typing-text');
-
-        function typeEffect() {
-            const currentTitle = titles[titleIndex];
-
-            if (isDeleting) {
-                typingElement.textContent = currentTitle.substring(0, charIndex - 1);
-                charIndex--;
-            } else {
-                typingElement.textContent = currentTitle.substring(0, charIndex + 1);
-                charIndex++;
-            }
-
-            let typeSpeed = isDeleting ? 50 : 100;
-
-            if (!isDeleting && charIndex === currentTitle.length) {
-                typeSpeed = 2000;
-                isDeleting = true;
-            } else if (isDeleting && charIndex === 0) {
-                isDeleting = false;
-                titleIndex = (titleIndex + 1) % titles.length;
-                typeSpeed = 500;
-            }
-
-            setTimeout(typeEffect, typeSpeed);
-        }
-
-        typeEffect();
-
-        // Navbar Scroll Effect
-        window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 100) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
-
-        // Scroll Animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
+          if (targetId === "#top") {
+            window.scrollTo({
+              top: 0,
+              left: 0,
+              behavior: "smooth",
             });
-        }, observerOptions);
+            closeNav();
+            return;
+          }
 
-        document.querySelectorAll('.timeline-item, .skill-category, .project-card, .publication-card, .cert-card').forEach(el => {
-            observer.observe(el);
-        });
-
-        // Timeline Toggle
-        function toggleTimeline(element) {
-            element.classList.toggle('expanded');
-        }
-
-        // Mobile Menu
-        function toggleMenu() {
-            const mobileMenu = document.querySelector('.mobile-menu');
-            mobileMenu.classList.toggle('active');
-            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
-        }
-
-        // Modal Functions with Links
-        const modalData = {
-            'modal-nepali': {
-                title: 'Nepali OCR using Vision Transformers',
-                body: `
-                    <p>Inspired by TR-OCR, exploring vision-based transformers for Nepali text detection.</p>
-                    <h4>Key Highlights:</h4>
-                    <ul>
-                        <li>Trained RoBERTa-based tokenizer and encoder on Nepali datasets</li>
-                        <li>Exploring methodologies for collecting OCR datasets</li>
-                    </ul>
-                    <h4>Technologies:</h4>
-                    <p>Python, Transformers, RoBERTa, PyTorch</p>
-                `,
-                links: [
-                    { url: 'https://github.com/bikhanal/nepali-roberta', icon: 'github', text: 'View Code' }
-                ]
-            },
-            'modal-face': {
-                title: 'Face Generator using Generative Models',
-                body: `
-                    <p>Explored various encoder-decoder frameworks for generating synthetic facial images.</p>
-                    <h4>Models Implemented:</h4>
-                    <ul>
-                        <li>Autoencoders and Variational Autoencoders (VAE)</li>
-                        <li>Deep Convolutional GAN (DCGAN)</li>
-                        <li>Wasserstein GAN (WGAN)</li>
-                    </ul>
-                    <h4>Dataset:</h4>
-                    <p>CelebA facial attribute dataset</p>
-                `,
-                links: [
-                    { url: 'https://github.com/bikhanal/generative-deep-learning', icon: 'github', text: 'Infusing Diffusion Models' },
-                    { url: 'https://github.com/bikhanal/applied-gans', icon: 'github', text: 'Applications of GAN' }
-                ]
-            },
-            'modal-asl': {
-                title: 'Google ASL Fingerspelling Recognition',
-                body: `
-                    <p>Kaggle competition for detecting and translating ASL into text.</p>
-                    <h4>Achievement:</h4>
-                    <p><strong>371th rank out of 1315 teams</strong></p>
-                    <h4>Approach:</h4>
-                    <p>TFLite model trained on landmark data from MediaPipe Holistic Solution</p>
-                `,
-                links: [
-                    { url: 'https://github.com/bikhanal/gaslfr-kaggle', icon: 'github', text: 'ASL Recognition' },
-                    { url: 'https://github.com/bikhanal/gislr-kaggle', icon: 'github', text: 'ISL Recognition' }
-                ]
-            },
-            'modal-bbdc': {
-                title: 'Bremen Big Data Challenge 2020',
-                body: `
-                    <p>Predicting hand movements from EMG sensor data.</p>
-                    <h4>Achievement:</h4>
-                    <p><strong>12th place out of 31 teams</strong></p>
-                    <h4>Approach:</h4>
-                    <p>Combination of U-Net and LSTM models. Error achieved: 0.464</p>
-                `,
-                links: []
-            },
-            'modal-thesis': {
-                title: 'Non-Linearity in Wireless Communications',
-                body: `
-                    <p>Bachelor's thesis on applying deep learning to model non-linearities in wireless channels.</p>
-                    <h4>Key Contributions:</h4>
-                    <ul>
-                        <li>Analyzed non-linear effects in wireless channels</li>
-                        <li>Applied neural networks for compensation</li>
-                    </ul>
-                `,
-                links: [
-                    { url: 'https://github.com/bikhanal/bachelors-thesis', icon: 'github', text: 'View Thesis' }
-                ]
-            },
-            'modal-llm-compression': {
-                title: 'LLM Compression Techniques Impact',
-                body: `
-                    <p>Evaluating how different compression techniques affect LLM task-specific performance.</p>
-                    <h4>Techniques Evaluated:</h4>
-                    <ul>
-                        <li>Quantization (INT8, INT4)</li>
-                        <li>Pruning and Knowledge Distillation</li>
-                    </ul>
-                    <h4>Key Findings:</h4>
-                    <p>Comprehensive analysis of trade-offs between size, speed, and performance</p>
-                `,
-                links: [
-                    { url: 'https://arxiv.org/abs/2409.11233', icon: 'file-alt', text: 'Read Paper' }
-                ]
-            },
-            'modal-paper1': {
-                title: 'Alignment of 360° Images for 3D Mesh Texturing',
-                body: `
-                    <p>Published in Frontiers in Computer Science (2024)</p>
-                    <h4>Abstract:</h4>
-                    <p>Novel approach for aligning 360° images with posed color images for locally accurate 3D mesh texturing in virtual tour applications.</p>
-                    <h4>Authors:</h4>
-                    <p>B. Khanal, M. Om, S. Rijal, V. Ojha</p>
-                `,
-                links: [
-                    { url: 'https://doi.org/10.3389/fcomp.2024.1388174', icon: 'external-link-alt', text: 'Read Paper' }
-                ]
-            },
-            'modal-paper2': {
-                title: 'Structure-preserving Planar Simplification',
-                body: `
-                    <p>Published on arXiv (2024)</p>
-                    <h4>Abstract:</h4>
-                    <p>Algorithms for planar simplification of 3D meshes while preserving structural elements for indoor virtual tours captured with LiDAR.</p>
-                    <h4>Authors:</h4>
-                    <p>B. Khanal, S. Rijal, M. Awale, V. Ojha</p>
-                `,
-                links: [
-                    { url: 'https://arxiv.org/abs/2408.06814', icon: 'external-link-alt', text: 'Read Paper' }
-                ]
-            },
-            'modal-paper3': {
-                title: 'Evaluating Compression on LLM Performance',
-                body: `
-                    <p>Published on arXiv (2024)</p>
-                    <h4>Abstract:</h4>
-                    <p>Comprehensive evaluation of LLM compression techniques and their impact on task-specific performance with deployment insights.</p>
-                    <h4>Authors:</h4>
-                    <p>B. Khanal, J. M. Capone</p>
-                `,
-                links: [
-                    { url: 'https://arxiv.org/abs/2409.11233', icon: 'external-link-alt', text: 'Read Paper' }
-                ]
-            },
-            'modal-paper4': {
-                title: 'TDD Governance for Multi-Agent Code Generation via Prompt Engineering',
-                body: `
-                    <p>Submitted to the 1st International Workshop on Empirical Prompt Engineering for Software Engineering (PROMPT-SE 2026)</p>
-                    <h4>Abstract:</h4>
-                    <p>We present an AI-native TDD framework that operationalizes classical TDD principles as structured prompt-level and workflow-level governance mechanisms. The system enforces phase ordering, bounded repair loops, validation gates, and atomic mutation control to improve stability and reproducibility.</p>
-                    <h4>Authors:</h4>
-                    <p>Tarlan Hasanli, Shahbaz Siddeeq, Bishwash Khanal, Pyry Kotilainen, Tommi Mikkonen, Pekka Abrahamsson</p>
-                `,
-                links: [
-                    { url: 'https://arxiv.org/abs/2604.26615', icon: 'external-link-alt', text: 'Read Paper' }
-                ]
-            }
-        };
-
-        function openModal(modalId) {
-            const modalOverlay = document.getElementById('modal-overlay');
-            const modalBody = document.getElementById('modal-body');
-            const data = modalData[modalId];
-
-            if (data) {
-                let linksHtml = '';
-                if (data.links && data.links.length > 0) {
-                    linksHtml = '<div class="modal-links">';
-                    data.links.forEach(link => {
-                        const iconClass = (link.icon === 'github' || link.icon === 'linkedin' || link.icon === 'orcid') ? 'fab' : 'fas';
-                        linksHtml += `<a href="${link.url}" target="_blank" class="modal-link"><i class="${iconClass} fa-${link.icon}"></i>${link.text}</a>`;
-                    });
-                    linksHtml += '</div>';
-                }
-
-                modalBody.innerHTML = `
-                    <h3 class="modal-title">${data.title}</h3>
-                    <div class="modal-body">${data.body}</div>
-                    ${linksHtml}
-                `;
-                modalOverlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        function closeModal(event) {
-            if (!event || event.target === document.getElementById('modal-overlay')) {
-                document.getElementById('modal-overlay').classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeModal();
-            }
-        });
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
+          if (targetSection) {
+            targetSection.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
             });
+            closeNav();
+          }
         });
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && document.body.classList.contains("nav-open")) {
+          closeNav();
+          navToggle.focus();
+        }
+      });
+
+      document.addEventListener("click", (e) => {
+        if (
+          document.body.classList.contains("nav-open") &&
+          !navPanel.contains(e.target) &&
+          !navToggle.contains(e.target)
+        ) {
+          closeNav();
+        }
+      });
     </script>
-</body>
+  </body>
 </html>
